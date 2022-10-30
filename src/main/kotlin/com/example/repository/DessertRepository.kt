@@ -1,19 +1,14 @@
 package com.example.repository
 
-import com.example.model.Dessert
-import com.example.model.DessertsPage
-import com.example.model.PagingInfo
-import com.mongodb.client.MongoClient
-import com.mongodb.client.MongoCollection
-import org.litote.kmongo.getCollection
+import com.example.models.Dessert
+import com.example.models.DessertsPage
+import com.example.models.PagingInfo
+import org.litote.kmongo.eq
 
-class DessertRepository(client: MongoClient) : RepositoryInterface<Dessert> {
-    override val collection: MongoCollection<Dessert>
-
-    init {
-        val database = client.getDatabase("test")
-        collection = database.getCollection<Dessert>(Dessert::class.java.simpleName)
-    }
+class DessertRepository : Repository<Dessert>(
+    collectionName = Dessert::class.java.simpleName,
+    collectionType = Dessert::class.java
+) {
 
     fun getDessertsPage(page: Int, size: Int): DessertsPage {
         return try {
@@ -36,6 +31,14 @@ class DessertRepository(client: MongoClient) : RepositoryInterface<Dessert> {
             )
         } catch (e: Exception) {
             throw Exception("Cannot get desserts page")
+        }
+    }
+
+    fun getDessertsByUserId(userId: String): List<Dessert> {
+        return try {
+            collection.find(Dessert::userId eq userId).toList()
+        } catch (e: Exception) {
+            throw Exception("Cannot get user Desserts")
         }
     }
 }

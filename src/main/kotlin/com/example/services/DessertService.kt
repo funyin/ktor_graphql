@@ -1,19 +1,16 @@
 package com.example.services
 
-import com.example.model.Dessert
-import com.example.model.DessertInput
-import com.example.model.DessertsPage
+import com.example.models.Dessert
+import com.example.models.DessertInput
+import com.example.models.DessertsPage
 import com.example.repository.DessertRepository
-import com.mongodb.client.MongoClient
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.UUID
 
 class DessertService : KoinComponent {
-    private val client: MongoClient by inject()
-    private val repository = DessertRepository(client)
+    private val repository = DessertRepository()
 
-    fun getDesertsPage(page: Int, size: Int):DessertsPage = repository.getDessertsPage(page, size)
+    fun getDesertsPage(page: Int, size: Int): DessertsPage = repository.getDessertsPage(page, size)
 
     fun getDessert(id: String): Dessert = repository.getById(id)
 
@@ -25,13 +22,14 @@ class DessertService : KoinComponent {
         return repository.delete(id)
     }
 
-    fun addDessert(dessert: DessertInput): Dessert {
+    fun addDessert(dessert: DessertInput, userId: String): Dessert {
         return repository.add(
             Dessert(
                 _id = UUID.randomUUID().toString(),
                 name = dessert.name,
                 description = dessert.description,
-                imageUrl = dessert.imageUrl
+                imageUrl = dessert.imageUrl,
+                userId = userId
             )
         )
     }

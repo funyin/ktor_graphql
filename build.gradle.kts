@@ -10,6 +10,8 @@ plugins {
     application
     kotlin("jvm") version "1.7.20"
     id("io.ktor.plugin") version "2.1.3"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("java")
 }
 
 group = "com.example"
@@ -20,7 +22,15 @@ application {
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
-
+tasks.withType<Jar>{
+    manifest{
+        attributes(
+            mapOf(
+                "Main-Class" to application.mainClass
+            )
+        )
+    }
+}
 repositories {
     mavenCentral()
 }
@@ -43,8 +53,9 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
 
+/*
 kotlin.sourceSets["main"].kotlin.srcDirs("src")
 kotlin.sourceSets["test"].kotlin.srcDirs("test")
 
 sourceSets["main"].resources.srcDirs("resources")
-sourceSets["test"].resources.srcDirs("testresources")
+sourceSets["test"].resources.srcDirs("testresources")*/
